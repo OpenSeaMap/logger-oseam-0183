@@ -17,8 +17,8 @@
 #    hex     -x      - write hex file
 #
 # Usage examples: 
-#   oseamlog.sh -d /dev/sdd -I    # initialize sdcard"
-#   oseamlog.sh -I    # initialize sdcard"
+#   oseamlog.sh -d /dev/sdd -i    # initialize sdcard"
+#   oseamlog.sh -f                # init + format sdcard"
 #
 # Background:
 #   o for all SD card operations you need to run with sudo"
@@ -140,8 +140,15 @@ while [ true ] ; do
      ;;
 
 
-  -f|fat16)
+  -f|fat)
      security
+     ftype=6
+     if [ $size -gt 600000000 ] ; then
+       echo "setting file type vfat, really proceed? (Ctrl-C to abort)"
+       ftype=b
+       mkfs-options="-r 4096"   # not used yet, increase nr of root dir entries
+       read proceed
+     fi
      # erase the first 20MBytes
      echo "erasing $SDDEV... "
      sudo dd if=/dev/zero of=$SDDEV bs=1M  count=20
@@ -159,15 +166,16 @@ while [ true ] ; do
 
      t
 
-     6
+     $ftype
      w
      " \
      | sudo fdisk $SDDEV
      sudo fdisk -l $SDDEV
 
-     sudo mkfs.vfat -n OPENSEAMAP  $SDDEV1
-     #sudo mount -t vfat $SDDEV1 /mnt
-
+     sudo mkfs.vfat -v -n OPENSEAMAP  $SDDEV1
+     sudo mount -t vfat $SDDEV1 /mnt
+     sudo touch /mnt   # set actual date
+     
      # C-program to change the disk identifier
      # http://www.linuxquestions.org/questions/linux-general-1/what-is-disk-identifier-740408/
      ;;
