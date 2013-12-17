@@ -204,10 +204,26 @@ while [ true ] ; do
      
      
   -x|hex)
-     echo /tmp 
-     ls -ltr /tmp | tail -n 1
+     # we assume, that the latest arduino build was written to /tmp/buildXXX
+     # otherwise, change newhex below
+     echo 
+     newdir=`ls -dtr /tmp/build* | tail -n 1`
+     newhex=`find $newdir -name "OpenSeaMap*.hex"`
      sudo mount $SDDEV1 /mnt
-     echo "HEX file copying not yet implemented"
+
+     if [ -f /mnt/OSMFIRMW.HEX ] ; then
+       echo "creating backup of /mnt/OSMFIRMW.HEX: OSMFIRMW_$tstmp.HEX.bak"
+       cp -p /mnt/OSMFIRMW.HEX OSMFIRMW_$tstamp.HEX.bak
+     fi
+     echo
+
+     if [ "$newhex" != "" ] ; then
+       echo "copying $newhex to /mnt/OSMFIRMW.HEX"
+       cp $newhex /mnt/OSMFIRMW.HEX
+     else
+       echo "sorry, no hex file found in /tmp"
+     fi
+     diff -s /mnt/OSMFIRMW.HEX OSMFIRMW_$tstmp.HEX.bak
      ;;
      
   
