@@ -213,17 +213,17 @@ while [ true ] ; do
 
      if [ -f /mnt/OSMFIRMW.HEX ] ; then
        echo "creating backup of /mnt/OSMFIRMW.HEX: OSMFIRMW_$tstmp.HEX.bak"
-       cp -p /mnt/OSMFIRMW.HEX OSMFIRMW_$tstamp.HEX.bak
+       cp -p /mnt/OSMFIRMW.HEX OSMFIRMW_$tstmp.HEX.bak
      fi
      echo
 
      if [ "$newhex" != "" ] ; then
        echo "copying $newhex to /mnt/OSMFIRMW.HEX"
-       cp $newhex /mnt/OSMFIRMW.HEX
+       sudo cp $newhex /mnt/OSMFIRMW.HEX
      else
        echo "sorry, no hex file found in /tmp"
      fi
-     diff -s /mnt/OSMFIRMW.HEX OSMFIRMW_$tstmp.HEX.bak
+     diff -s -q /mnt/OSMFIRMW.HEX OSMFIRMW_$tstmp.HEX.bak
      ;;
      
   
