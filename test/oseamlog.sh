@@ -15,6 +15,7 @@
 #    init    -i      - init SD card by writing an image file
 #    fat     -f      - create a new partition table and FAT16 file system
 #    hex     -x      - write hex file
+#    ls      -l      - list card contents, showing special infos for DAT files
 #
 # Usage examples: 
 #   oseamlog.sh -d /dev/sdd -i    # initialize sdcard"
@@ -226,7 +227,41 @@ while [ true ] ; do
      diff -s -q /mnt/OSMFIRMW.HEX OSMFIRMW_$tstmp.HEX.bak
      ;;
      
-  
+
+  -l|ls)
+     # list card contents with time info comments
+     sudo mount $SDDEV1 /mnt
+     cd /mnt
+     echo
+     for i in  `ls -1 DATA*.DAT ` ; do
+       # echo "$i"
+       # check for DAT files
+       if [ "`echo $i | grep 'DATA.*\.DAT'`" != "" ] ; then
+         # extract time info
+         DATdateA="`grep ZDA $i | head -n 1`"
+         DATdateZ="`grep ZDA $i | tail -n 1`"
+         DATtimeA="`grep 'RMC.*,A' $i | head -n 2 | head -n 1`"
+         DATtimeZ="`grep 'RMC.*,A' $i | tail -n 1`"
+         
+         RMCA="`echo $DATtimeA | awk -F ',' '{ print $10 \", \" $2}'`"
+         RMCZ="`echo $DATtimeZ | awk -F ',' '{ print $2}'`"
+         RMCP="`echo $DATtimeA | awk -F ',' '{ print \"\tpos: \" $4 \",\" $5 \", \" $6 \",\" $7}'`"
+         echo "`ls -l $i | awk '{ print $9 \"\tsize: \" $5 \"\tdate: \" }'` $RMCA - $RMCZ   $RMCP"
+         #echo "   $DATdateA"
+         #echo "   $DATtimeA"
+         #echo "   $DATdateZ"
+         #echo "   $DATtimeZ"
+         #echo
+       fi
+     done
+       
+     # list other files
+     ls -l  | grep -v "DATA.*DAT"
+     cd -
+     echo
+     ;;
+     
+     
   *)
      echo
      echo "usage: $0 <command> [arg] .."
