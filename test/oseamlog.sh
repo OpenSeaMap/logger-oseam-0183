@@ -233,11 +233,11 @@ while [ true ] ; do
      sudo mount $SDDEV1 /mnt
      cd /mnt
      echo
+     
+     # check for DAT files
      for i in  `ls -1 DATA*.DAT ` ; do
-       # echo "$i"
-       # check for DAT files
-       if [ "`echo $i | grep 'DATA.*\.DAT'`" != "" ] ; then
-         # extract time info
+         
+         # extract time and position info
          DATdateA="`grep ZDA $i | head -n 1`"
          DATdateZ="`grep ZDA $i | tail -n 1`"
          DATtimeA="`grep 'RMC.*,A' $i | head -n 2 | head -n 1`"
@@ -246,13 +246,13 @@ while [ true ] ; do
          RMCA="`echo $DATtimeA | awk -F ',' '{ print $10 \", \" $2}'`"
          RMCZ="`echo $DATtimeZ | awk -F ',' '{ print $2}'`"
          RMCP="`echo $DATtimeA | awk -F ',' '{ print \"\tpos: \" $4 \",\" $5 \", \" $6 \",\" $7}'`"
+
          echo "`ls -l $i | awk '{ print $9 \"\tsize: \" $5 \"\tdate: \" }'` $RMCA - $RMCZ   $RMCP"
          #echo "   $DATdateA"
          #echo "   $DATtimeA"
          #echo "   $DATdateZ"
          #echo "   $DATtimeZ"
          #echo
-       fi
      done
        
      # list other files
