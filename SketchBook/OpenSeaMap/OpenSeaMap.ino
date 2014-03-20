@@ -1,6 +1,6 @@
 #define doOutputVcc
 #define doOutputGyro
-#define debug
+//#define debug
 //#define freemem
 //#define noWrite
 //#define devmode
