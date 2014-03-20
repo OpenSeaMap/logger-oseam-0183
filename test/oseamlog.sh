@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # oseamlog.sh
 #
 # Purpose:
@@ -147,7 +149,7 @@ while [ true ] ; do
      if [ $size -gt 600000000 ] ; then
        echo "setting file type vfat, really proceed? (Ctrl-C to abort)"
        ftype=b
-       mkfs-options="-r 4096"   # not used yet, increase nr of root dir entries
+       mkfs_options="-r 4096"   # increase nr of root dir entries
        read proceed
      fi
      # erase the first 20MBytes
@@ -173,7 +175,7 @@ while [ true ] ; do
      | sudo fdisk $SDDEV
      sudo fdisk -l $SDDEV
 
-     sudo mkfs.vfat -v -n OPENSEAMAP  $SDDEV1
+     sudo mkfs.vfat -v -n OPENSEAMAP $mkfs_options $SDDEV1
      sudo mount -t vfat $SDDEV1 /mnt
      sudo touch /mnt   # set actual date
      
