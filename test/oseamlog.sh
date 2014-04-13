@@ -231,9 +231,17 @@ while [ true ] ; do
      
 
   -l|ls)
-     # list card contents with time info comments
-     sudo mount $SDDEV1 /mnt
-     cd /mnt
+     if [ "$2" == "" ] ; then
+       # list card contents with time info comments
+       sudo mount $SDDEV1 /mnt
+       cd /mnt
+     else
+       ldir=$2
+       cd $ldir
+       shift
+     fi
+     echo
+     echo DAT files contents of `pwd`
      echo
      
      # check for DAT files
@@ -244,12 +252,22 @@ while [ true ] ; do
          DATdateZ="`grep ZDA $i | tail -n 1`"
          DATtimeA="`grep 'RMC.*,A' $i | head -n 2 | head -n 1`"
          DATtimeZ="`grep 'RMC.*,A' $i | tail -n 1`"
+         DATstmpA="`head -n 1 $i | sed -e 's/;.*//'`"
+         DATstmpZ="`tail -n 1 $i | sed -e 's/;.*//'`"
          
          RMCA="`echo $DATtimeA | awk -F ',' '{ print $10 \", \" $2}'`"
          RMCZ="`echo $DATtimeZ | awk -F ',' '{ print $2}'`"
          RMCP="`echo $DATtimeA | awk -F ',' '{ print \"\tpos: \" $4 \",\" $5 \", \" $6 \",\" $7}'`"
 
-         echo "`ls -l $i | awk '{ print $9 \"\tsize: \" $5 \"\tdate: \" }'` $RMCA - $RMCZ   $RMCP"
+         #echo "`ls -l $i | awk '{ print $9 \"\tsize: \" $5 \"\tdate: \" }'` $RMCA - $RMCZ   $RMCP"
+         
+         # example output:
+         #DATA0073.DAT    size:  1794306  01:00:01.475 - 02:00:00.769     date: 130414  131202 - 141201  pos: 4811.265,N, 01152.158,E
+         #
+         name_size="`ls -l $i | awk '{ print $9 \" \" $5 }'`"
+         echo "$name_size $DATstmpA $DATstmpZ $RMCA $RMCZ $RMCP" \
+          | awk '{ printf("%s\tsize: %8d \t%s - %s \tdate: %6d  %6d - %6d  %s %s %s\n", $1,$2,$3,$4,$5,$6,$7,$8,$9,$10); }'
+         
          #echo "   $DATdateA"
          #echo "   $DATtimeA"
          #echo "   $DATdateZ"
@@ -258,7 +276,7 @@ while [ true ] ; do
      done
        
      # list other files
-     ls -l  | grep -v "DATA.*DAT"
+     ls -l | grep -v "DATA.*DAT"
      cd -
      echo
      ;;
