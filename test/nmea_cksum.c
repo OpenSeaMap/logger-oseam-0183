@@ -9,7 +9,9 @@
   crc immer mitlaufen lassen, und wenn ein * kommt, dann in eine
   shadow-Variable kopieren, wenn $ kommt, dann crc init
   
+  This is not a proper parser and may not detect all corrupted sentences
 */
+
 #include <stdio.h>
 
 
@@ -20,17 +22,24 @@ main(int argc, char** argv)
    int cksum_orig=0;
    int cksum='$';
    int state=0;
+   char buf[3];
+   
+   int option_r=0;    // replace wrong checksum
+   int option_m=1;    // mark checksum error
 
    while(state<6) {
      cc=getchar();
      switch (cc) {
        case '$':  state=1;   
                   break;
-       case '*':  state=2;   
+       case '*':  if(state==1)
+                    state=2;   
                   break;
-       case '\r': state=0; 
+       case '\r': if(state==5)
+                    state=0; 
                   break;
-       case '\n': state=0; 
+       case '\n': if(state==5)
+                    state=0; 
                   break;
        case  EOF: state=6; 
                   break;
@@ -47,13 +56,22 @@ main(int argc, char** argv)
                 state++;
                 break;
        case 3:  state++;
-                //chsum_orig=atoi..
+                buf[0]=cc;
                 break;
        case 4:  state++;
-                //chsum_orig+=atoi..
-                printf( "%02X", cksum);
+                buf[1]=cc;
+                buf[2]=0;
+                sscanf(buf,"%2X",&cksum_orig);
+                if(option_r) {
+                  printf( "%02X", cksum);
+                } else{
+                  printf( "%02X", cksum_orig);
+                }
+                if(option_m &&(cksum_orig!=cksum))
+                  printf( " # wrong:%02X # right:%02X # ",cksum_orig, cksum);
                 break;
-       case 5:  printf( " %c unexpected ", cc);
+       case 5:  printf( "%c # unexpected # ", cc);
+                state=0;
                 break;
        case 6:  putchar( cc );
                 break;
