@@ -51,3 +51,4 @@ const word EEPROM_VERSION = E2END - 2;
 // constants of the differet bootloader versions
 const word BOOTLOADER_2_CONST = 0xB7FD;
 
+
