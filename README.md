@@ -50,3 +50,27 @@ icon open: OpenSeaMap
 menu tools: board  - select OpenSeaMap data logger board w/ATmega328
 menu sketch: Ctrl-R  - compile
 > ls -trl /tmp   # here goes the hex image in a subfolder...
+
+----------
+
+Ubuntu 13.10
+
+the new arduino v1.0.5 seems to store contributed Libraries outside the SketchBook.
+This may result in messages like
+fatal error: I2Cdev.h: not found
+
+You can avoid importing all the libraries manually by creating this link:
+> cd $MyOslGit
+> ln -s SketchBook/libraries/ .
+
+If a libraries folder already had been created by arduino before 
+you may consider to remove it before creating the link.
+If you prefer to keep this folder you will need to create the 
+the following links inside it instead:
+> cd $MyOslGit/libraries
+> ln -s ../SketchBook/libraries/I2Cdev .
+> ln -s ../SketchBook/libraries/MPU6050 .
+> ln -s ../SketchBook/libraries/AltSoftSerial .
+> ln -s ../SketchBook/libraries/SdFat .
+The other libraries will then be taken from /usr/share/arduino/libraries/
+

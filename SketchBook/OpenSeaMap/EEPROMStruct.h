@@ -19,3 +19,4 @@ template <class T> int EEPROM_readStruct(int address, T& value)
           *p++ = eeprom_read_byte((unsigned char *)address++);
     return i;
 }
+

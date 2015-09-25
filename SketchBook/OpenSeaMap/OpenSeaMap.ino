@@ -1,6 +1,6 @@
 
 /*
- OpenSeaMap.ino - Logger for the OpenSeaMap - Version 0.1.15
+ OpenSeaMap.ino - Logger for the OpenSeaMap - Version 0.1.16
  Copyright (c) 2014 Wilfried Klaas.  All right reserved.
 
  This program is free software; you can redistribute it and/or
@@ -45,6 +45,8 @@
 
  To Load firmware to OSM Lodder rename hex file to OSMFIRMW.HEX and put it on a FAT16 formatted SD card.
  */
+// amerz 20150924 V0.1.16
+// - fix bug if number of DATA-files exceeds 256
 // WKLA 20141006 V0.1.15
 // - adding right bootloader constant
 // - some testing with and without NMEA check
@@ -576,7 +578,7 @@ static word CalculateChecksum (word addr, word size) {
 /*           Main part           */
 /*********************************/
 
-byte fileCount = 0;
+word fileCount = 0;
 int ax, ay, az;
 word vcc;
 unsigned long lastW;
@@ -1132,3 +1134,4 @@ void writeNMEAData(char* data) {
   dbgOutLn2(crc, HEX);
 #endif
 }
+

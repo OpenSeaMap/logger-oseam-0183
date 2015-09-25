@@ -1,9 +1,9 @@
 /**
 * here all NMEA messages are defined
 */
-#define VERSIONNUMBER 15
-#define VERSION PSTR("V 0.1.15")
-#define START_MESSAGE PSTR("POSMST,Start NMEA Logger,V 0.1.15")
+#define VERSIONNUMBER 16
+#define VERSION PSTR("V 0.1.16")
+#define START_MESSAGE PSTR("POSMST,Start NMEA Logger,V 0.1.16")
 #define CONFIG_MESSAGE PSTR("POSMCFG,%u,%u,%u,%u,%x,%u")
 #define STOP_MESSAGE PSTR("POSMSO,Stop NMEA Logger")
 #define REASON_TIME_MESSAGE PSTR("POSMSO,Reason: times up")
@@ -30,4 +30,5 @@
 #define CHANNEL_A_IDENTIFIER 'A'
 #define CHANNEL_B_IDENTIFIER 'B'
 #define CHANNEL_I_IDENTIFIER 'I'
+
 
